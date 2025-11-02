@@ -52,13 +52,12 @@ This brought the runtime down significantly without losing accuracy.
 **4. Step 3: Choosing the Right Similarity Metric (SSIM)**
 
 I tested a few different similarity metrics before finalizing one:
-```
 
-Metric	Type	Accuracy	Speed	Comment
-Mean Squared Error (MSE)	Pixel-based	Low	Fast	Very sensitive to noise
-Histogram Correlation	Color-based	Moderate	Fast	Misses spatial structure
-Structural Similarity Index (SSIM)	Structural	High	Moderate	Captures structure, contrast & brightness
-```
+| Metric | Type | Accuracy | Speed | Comment |
+|---------|------|-----------|--------|----------|
+| Mean Squared Error (MSE) | Pixel-based | Low | Fast | Very sensitive to noise |
+| Histogram Correlation | Color-based | Moderate | Fast | Ignores spatial structure |
+| **Structural Similarity Index (SSIM)** | Structural | High | Moderate | Captures luminance, contrast, and structural details |
 
 I finally chose SSIM (Structural Similarity Index) because it’s much closer to how humans perceive image similarity — it focuses on structure and texture, not just color.
 
@@ -80,22 +79,21 @@ If the diagonal values are zero (each frame is identical to itself)
 
 This helped ensure that the reconstruction algorithm would start with clean, consistent data.
 
-**6. Step 5: Reconstructing the Video**
+## 6. Step 5: Reconstructing the Video
 
-Now came the most interesting part — reconstructing the correct order of the video frames.
+Reconstructing required an algorithm that balances **accuracy**, **speed**, and **simplicity**.
 
-I compared a few different algorithms to find the right balance between accuracy, speed, and simplicity:
-```
-Algorithm	Approach	Time	Accuracy	Complexity
-Random Shuffle	Baseline	Very Low	Very Low	Trivial
-Greedy Nearest Neighbor	Local similarity	Fast	Good	Simple
-2-Way Greedy	Bidirectional refinement	Medium	Better	Moderate
-TSP (Nearest Insertion)	Global optimization	Slow	Best	High
-Graph DFS	Sequential flow	Medium	Fair	Moderate
-```
+| Algorithm | Approach | Time | Accuracy | Complexity |
+|------------|-----------|-------|-----------|-------------|
+| Random Shuffle | Baseline | Very Low | Very Low | Trivial |
+| Greedy Nearest Neighbor | Local similarity | Fast | Good | Simple |
+| 2-Way Greedy | Bidirectional refinement | Medium | Better | Moderate |
+| TSP (Nearest Insertion) | Global optimization | Slow | Best | High |
+| Graph DFS | Sequential flow | Medium | Fair | Moderate |
 
-I went with the Greedy SSIM-based ordering — it gave me great results quickly without needing complex optimization like TSP.
-To handle cases where the video might accidentally reconstruct backward, I added a motion direction validation step using optical flow (Farneback algorithm).
+I selected the **Greedy SSIM-based ordering** because it produced near-perfect accuracy while being significantly faster than full TSP solvers.  
+However, greedy orderings can occasionally yield a reversed sequence, so I added an **optical-flow-based direction validation** step using Farneback motion estimation.
+
 
 The main reconstruction script (reconstruct.py) does:
 
