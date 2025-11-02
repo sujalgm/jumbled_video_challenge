@@ -138,6 +138,19 @@ scikit-image
 
 pip install -r requirements.txt
 
+> **Note (Installation Tip):**
+> This project has been verified on Python 3.10 and 3.11.  
+> If you face any dependency or installation errors (for example, NumPy build issues),
+> please recreate a virtual environment with Python 3.10 or 3.11 and run:
+> '''
+> py -3.11 -m venv venv
+> venv\Scripts\activate
+> pip install --upgrade pip setuptools wheel
+> pip install -r requirements.txt
+> '''
+> These versions are fully compatible and will install all packages smoothly.
+
+
 **8. How to Run**
 **Step 0 — Place Your Input Video**
 
