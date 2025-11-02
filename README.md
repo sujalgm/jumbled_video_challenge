@@ -136,7 +136,20 @@ scikit-image
 **install dependencies:**
 pip install -r requirements.txt
 
+
+
 ***8. How to Run***
+
+## Place Your Input Video
+
+**Before running the project, ensure you have the jumbled input video file.**
+
+1. Place the input video in the **project root** (same folder as 'extract_frames.py').
+2. Rename it to **'jumbled_video.mp4'**.
+3. If your file has a different name, you can either rename it or update the following line inside 'extract_frames.py':
+   python
+   VIDEO_FILE = "your_video_name.mp4"
+
 
 **Step 1 – Extract frames:
 python extract_frames.py**
