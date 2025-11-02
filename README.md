@@ -79,7 +79,7 @@ Before using the matrix, I validated it with verify_matrix.py, which checks:
 
 Reconstructing required an algorithm that balances accuracy, speed, and simplicity.
 
-Algorithm	Approach	Time	Accuracy	Complexity
+**Algorithm**	**Approach**	**Time**	**Accuracy**	**Complexity**
 Random Shuffle	Baseline	Very Low	Very Low	Trivial
 Greedy Nearest Neighbor	Local similarity	Fast	Good	Simple
 2-Way Greedy	Bidirectional refinement	Medium	Better	Moderate
