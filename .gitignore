@@ -1,0 +1,24 @@
+# Virtual environments
+venv/
+.env/
+
+# Cache & compiled Python files
+__pycache__/
+*.pyc
+
+# Data and large generated files
+*.mp4
+*.avi
+*.npy
+*.csv
+*.json
+
+# Frame and output directories
+frames/*
+outputs/*
+!frames/.gitkeep
+!outputs/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
