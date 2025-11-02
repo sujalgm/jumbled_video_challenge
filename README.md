@@ -193,6 +193,22 @@ Real-Time Extension:
 Adapting the algorithm for continuous or live video input could make it suitable for real-time applications such as surveillance.
 
 
+## Execution Time Log
+This log was automatically generated after successful reconstruction:
+{
+  "load_seconds": 40.2311,
+  "similarity_seconds": 213.6174,
+  "greedy_order_seconds": 0.0145,
+  "direction_choice": "forward",
+  "direction_select_seconds": 0.0003,
+  "write_video_seconds": 12.284,
+  "total_seconds": 278.4051
+}
+
+**## Unjumbled video google drive link**
+
+https://drive.google.com/file/d/169dBJpBTTE_LanDsILmyCHnsC4J4CY6b/view?usp=sharing
+
 Authored by 
 SUJAL GM 
 for TECDIA Internship Challenge - 2025
