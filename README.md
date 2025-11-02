@@ -37,7 +37,7 @@ This gave me around 300 frames to work with — these became the base dataset fo
 Once I had the frames, the next challenge was figuring out how “different” one frame is from another.
 To do that, I built a dissimilarity matrix, which is basically an N × N grid (where N = number of frames) that measures the visual difference between every pair of frames.
 
-At first, my brute-force version worked, but it took more than 12 minutes to complete — since comparing 300 frames means almost 45,000 comparisons!
+At first, my brute-force version worked, but it took more than ~2hours to complete — since comparing 300 frames means almost 45,000 comparisons!
 
 So I optimized it by:
 
@@ -239,6 +239,8 @@ Extending to handle real-time video reconstruction
 https://drive.google.com/file/d/169dBJpBTTE_LanDsILmyCHnsC4J4CY6b/view?usp=sharing
 
 
-Authored by:
+**Authored by:**
+```
 Sujal GM
-for TECDIA Internship Challenge 
+```
+**for TECDIA Internship Challenge**
