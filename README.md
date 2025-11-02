@@ -166,6 +166,15 @@ pip install -r requirements.txt
 These versions are fully compatible and will install everything smoothly.
 
 **8. How to Run**
+**Initial step -**
+```
+git clone https://github.com/sujalgm/jumbled_video_challenge
+cd jumbled_video_challenge
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
 **Step 0 — Place Your Input Video**
 
 Put your jumbled video file in the project root and name it:
