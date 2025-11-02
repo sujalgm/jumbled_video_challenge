@@ -138,20 +138,24 @@ pip install -r requirements.txt
 
 ***8. How to Run***
 
-Step 1 – Extract frames:
-python extract_frames.py
-Step 2 – Compute dissimilarity matrix:
-python compute_matrix_ssim.py
-Step 3 – Verify matrix:
-python verify_matrix.py
-Step 4 – Reconstruct the video:
-python reconstruct.py --frames-dir frames --fps 30
-Outputs will appear in:
+**Step 1 – Extract frames:
+python extract_frames.py**
+
+**Step 2 – Compute dissimilarity matrix:
+python compute_matrix_ssim.py**
+
+**Step 3 – Verify matrix:
+python verify_matrix.py**
+
+**Step 4 – Reconstruct the video:
+python reconstruct.py --frames-dir frames --fps 30**
+
+**Outputs will appear in:
 outputs/
  ├── unjumbled_output.mp4
  ├── unjumbled_output_reversed.mp4
  ├── order.csv
- └── timing_log.json
+ └── timing_log.json**
 
 **9. Key Learnings and Observations**
 
