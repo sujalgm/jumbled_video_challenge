@@ -1,10 +1,10 @@
-Jumbled Frames Reconstruction – TECDIA Internship Challenge
+***Jumbled Frames Reconstruction – TECDIA Internship Challenge***
 
 This repository contains my solution for the Jumbled Frames Reconstruction Challenge conducted by TECDIA.
 The goal was to reconstruct a jumbled video (where all frames are out of order) into its original, correct sequence using computer vision and intelligent similarity-based analysis.
 The entire implementation was built in Python using OpenCV, NumPy, and scikit-image.
 
-1. Project Overview
+**1. Project Overview**
 
 The objective was to design an algorithm that could automatically reorder shuffled video frames back into their natural sequence, producing a coherent reconstructed video.
 
@@ -13,7 +13,7 @@ A friend of mine had earlier worked on a computer-vision project using OpenCV, a
 
 The very first step I understood was that I needed to extract every frame from the given jumbled video before performing any reconstruction. Without this, no algorithmic ordering could be attempted.
 
-2. Step 1: Extracting Frames
+**2. Step 1: Extracting Frames**
 
 The process began with a custom Python script named extract_frames.py.
 This script uses OpenCV to open the video file (jumbled_video.mp4) and save each frame sequentially as individual image files.
@@ -29,7 +29,7 @@ frames/
 
 This gave me a structured dataset of roughly 300 frames to work with for further analysis.
 
-3. Step 2: Building the Dissimilarity Matrix
+**3. Step 2: Building the Dissimilarity Matrix**
 
 Once all frames were available, I needed a way to quantify how different each frame is from every other—a dissimilarity matrix.
 This matrix is an 
@@ -51,7 +51,7 @@ I implemented parallel processing to utilize all CPU cores effectively.
 
 This combination maintained high accuracy while cutting runtime by several minutes.
 
-4. Step 3: Choosing the Right Similarity Metric (SSIM)
+**4. Step 3: Choosing the Right Similarity Metric (SSIM)**
 
 Various similarity metrics were considered:
 
@@ -66,19 +66,19 @@ The script compute_matrix_ssim.py calculates pairwise SSIM for nearby frames and
 
 This produced a clear visual “map” of how each frame relates to its neighbors.
 
-5. Step 4: Verifying the Matrix
+**5. Step 4: Verifying the Matrix**
 
 Before using the matrix, I verified its integrity with verify_matrix.py, which:
 
-Checks the matrix shape and numeric range.
+    Checks the matrix shape and numeric range.
 
-Confirms it is symmetric.
+    Confirms it is symmetric.
 
-Ensures diagonal entries are zero (each frame identical to itself).
+    Ensures diagonal entries are zero (each frame identical to itself).
 
-This verification helped catch inconsistencies early and guaranteed that the reconstruction stage started with clean data.
+    This verification helped catch inconsistencies early and guaranteed that the reconstruction stage started with clean data.
 
-6. Step 5: Reconstructing the Video
+**6. Step 5: Reconstructing the Video**
 
 Reconstructing the sequence required choosing an ordering algorithm that balances accuracy and speed. I evaluated several:
 
@@ -93,29 +93,29 @@ I selected the Greedy SSIM-based ordering because it produced near-perfect accur
 However, greedy ordering alone can occasionally yield a reversed sequence.
 To fix that, I added an optical-flow-based direction-validation step using Farneback motion estimation.
 
-All of this logic resides in reconstruct.py, which:
+**All of this logic resides in reconstruct.py, which:**
 
-Loads all frames from frames/.
+    Loads all frames from frames/.
 
-Builds the similarity matrix.
+    Builds the similarity matrix.
 
-Orders frames greedily by SSIM closeness.
+    Orders frames greedily by SSIM closeness.
 
-Evaluates both forward and reverse directions and keeps the smoother one.
+    Evaluates both forward and reverse directions and keeps the smoother one.
 
-Validates direction using optical flow.
+    Validates direction using optical flow.
 
-Saves:
+**Saves:**
 
-unjumbled_output.mp4
+  unjumbled_output.mp4
 
-unjumbled_output_reversed.mp4 (for manual cross-check)
+  unjumbled_output_reversed.mp4 (for manual cross-check)
 
-order.csv (final frame order)
+  order.csv (final frame order)
 
-timing_log.json (execution times)
+  timing_log.json (execution times)
 
-7. Requirements and Dependencies
+**7. Requirements and Dependencies**
 
 System Requirements
 
@@ -127,16 +127,16 @@ Python 3.9 or newer
 
 Tested on Windows 11, macOS Sonoma, Ubuntu 22.04
 
-Python packages required:
+**Python packages required:**
 opencv-python
 numpy
 tqdm
 scikit-image
 
-install dependencies:
+**install dependencies:**
 pip install -r requirements.txt
 
-8. How to Run
+***8. How to Run***
 
 Step 1 – Extract frames:
 python extract_frames.py
@@ -153,7 +153,7 @@ outputs/
  ├── order.csv
  └── timing_log.json
 
-9. Key Learnings and Observations
+**9. Key Learnings and Observations**
 
 Downscaling combined with SSIM provided the best trade-off between runtime and accuracy.
 
@@ -165,7 +165,7 @@ Modular design simplified debugging and incremental testing.
 
 This project strengthened my understanding of video analytics, image-similarity metrics, and computational optimization.
 
-10. References
+**10. References**
 
 Wang et al., “Image Quality Assessment: From Error Visibility to Structural Similarity,” IEEE Transactions on Image Processing, 2004.
 
@@ -175,7 +175,7 @@ OpenCV Documentation (https://docs.opencv.org
 Scikit-Image Documentation (https://scikit-image.org
 )
 
-11. Future Improvements and Next Steps
+**11. Future Improvements and Next Steps**
 
 While the current version performs efficiently and gives accurate reconstruction results, there are still a few ways it can be improved:
 
