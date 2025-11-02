@@ -80,11 +80,11 @@ Before using the matrix, I validated it with verify_matrix.py, which checks:
 Reconstructing required an algorithm that balances accuracy, speed, and simplicity.
 
 **Algorithm**	**Approach**	**Time**	**Accuracy**	**Complexity**
-Random Shuffle	Baseline	Very Low	Very Low	Trivial
-Greedy Nearest Neighbor	Local similarity	Fast	Good	Simple
-2-Way Greedy	Bidirectional refinement	Medium	Better	Moderate
-TSP (Nearest Insertion)	Global optimization	Slow	Best	High
-Graph DFS	Sequential flow	Medium	Fair	Moderate
+**Random Shuffle**	**Baseline**	**Very Low**	**Very Low**	**Trivial**
+**Greedy Nearest Neighbor**	**Local similarity**	**Fast**	**Good** **simple**
+**2-Way Greedy**	**Bidirectional refinement** **Medium**	**Better**	**Moderate**
+**TSP (Nearest Insertion)**	**Global optimization**	**Slow**	**Best**	**High**
+**Graph DFS**	**Sequential flow**	**Medium**	**Fair**	**Moderate**
 
 I selected a Greedy SSIM-based ordering — it produced near-perfect accuracy much faster than global TSP solvers.
 
