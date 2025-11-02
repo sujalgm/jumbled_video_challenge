@@ -1,115 +1,123 @@
 ***Jumbled Frames Reconstruction — TECDIA Internship Challenge***
 
 This repository contains my solution for the Jumbled Frames Reconstruction Challenge conducted by TECDIA.
-The goal was to reconstruct a jumbled video (where all frames are shuffled) into its original, correct sequence using computer vision and similarity-based analysis.
+The task was to reconstruct a jumbled video — where all frames are shuffled — back into its correct order using computer vision and similarity-based analysis.
 
-The implementation was built entirely in Python, leveraging OpenCV, NumPy, and scikit-image.
+The entire project was developed in Python, mainly using OpenCV, NumPy, and scikit-image.
 
 **1. Project Overview**
 
-The task was to design an algorithm that automatically reorders shuffled video frames into their natural sequence, producing a coherent reconstructed video.
+The goal was to design an algorithm that can automatically rearrange shuffled video frames to restore the original sequence and create a smooth, logical video again.
 
-As soon as I read the problem statement, I knew Python was the ideal language — it has been my primary tool since my first year of engineering and offers excellent support for image processing.
-A friend had previously worked on a computer-vision project using OpenCV, which reminded me that cv2 would be perfect for handling frames efficiently.
+As soon as I read the problem, I was sure that Python was the right language for this.
+I’ve been using Python since my first year of engineering, and it’s perfect for handling image and video data.
+A friend of mine had once worked on a project involving computer vision with OpenCV — that gave me the idea to use cv2 to read, analyze, and process the frames efficiently.
 
-The first logical step was to extract all video frames before attempting any ordering algorithm. Without frames, reconstruction is impossible.
+The first step was obvious — I had to extract all the individual frames from the given video before doing any kind of ordering or reconstruction.
 
 **2. Step 1: Extracting Frames**
 
-The process begins with extract_frames.py, which uses OpenCV to open the input video and extract each frame as a .png image.
+The process starts with extract_frames.py, which uses OpenCV to read the video and save each frame as a .png image inside a folder called frames/.
 
-Each frame is stored in a dedicated folder (frames/) like this:
+The folder looks like this:
 
+```
 frames/
  ├── frame_000.png
  ├── frame_001.png
  ├── frame_002.png
  ...
+```
 
 
-This forms the dataset of ~300 frames used for further analysis.
+This gave me around 300 frames to work with — these became the base dataset for further analysis.
 
 **3. Step 2: Building the Dissimilarity Matrix**
 
-Next, I needed to quantify how different each frame is from every other frame — the dissimilarity matrix.
-This is an N × N grid (where N = number of frames) storing the visual difference between each frame pair.
+Once I had the frames, the next challenge was figuring out how “different” one frame is from another.
+To do that, I built a dissimilarity matrix, which is basically an N × N grid (where N = number of frames) that measures the visual difference between every pair of frames.
 
-My first brute-force version worked but took over 12 minutes.
-With 300 frames, that’s ~45,000 comparisons — computationally heavy even for a modern CPU.
+At first, my brute-force version worked, but it took more than 12 minutes to complete — since comparing 300 frames means almost 45,000 comparisons!
 
-To optimize:
+So I optimized it by:
 
-Downscaled frames to 160×120 pixels (reduced workload, preserved structure).
+Downscaling each frame to 160×120 pixels to reduce computation while keeping key details.
 
-Converted to grayscale before computing similarity.
+Converting frames to grayscale before comparison.
 
-Parallelized computations to utilize all CPU cores effectively.
+Using parallel processing to make full use of the CPU.
 
-This cut runtime significantly while maintaining excellent accuracy.
+This brought the runtime down significantly without losing accuracy.
 
 **4. Step 3: Choosing the Right Similarity Metric (SSIM)**
 
-Different similarity metrics were evaluated:
+I tested a few different similarity metrics before finalizing one:
+```
 
 Metric	Type	Accuracy	Speed	Comment
-Mean Squared Error (MSE)	Pixel-wise	Low	Fast	Too sensitive to noise
-Histogram Correlation	Color-based	Moderate	Fast	Ignores spatial structure
-Structural Similarity Index (SSIM)	Structural	High	Moderate	Captures luminance, contrast & structure
+Mean Squared Error (MSE)	Pixel-based	Low	Fast	Very sensitive to noise
+Histogram Correlation	Color-based	Moderate	Fast	Misses spatial structure
+Structural Similarity Index (SSIM)	Structural	High	Moderate	Captures structure, contrast & brightness
+```
 
-I chose SSIM (Structural Similarity Index) because it models human visual perception and captures image structure much better than pixel-level metrics.
+I finally chose SSIM (Structural Similarity Index) because it’s much closer to how humans perceive image similarity — it focuses on structure and texture, not just color.
 
-The script compute_matrix_ssim.py computes pairwise SSIM between nearby frames and stores
-1 – SSIM as the dissimilarity score in dissimilarity_matrix.npy.
+The file compute_matrix_ssim.py calculates 1 - SSIM for each frame pair and saves the results in dissimilarity_matrix.npy.
 
-This matrix visually represents how closely each frame relates to others — forming the foundation for reconstruction.
+This matrix became the foundation for figuring out the right order of frames.
 
 **5. Step 4: Verifying the Matrix**
 
-Before using the matrix, I validated it with verify_matrix.py, which checks:
+Before reconstruction, I used verify_matrix.py to make sure the dissimilarity matrix was valid.
 
-   Correct shape and numeric range
+It checks:
 
-   Symmetry (matrix[i][j] = matrix[j][i])
+Whether the shape and values are correct
 
-   Zero diagonal (each frame is identical to itself)
+If it’s symmetric (matrix[i][j] = matrix[j][i])
 
-   This ensured clean, consistent data before reconstruction.
+If the diagonal values are zero (each frame is identical to itself)
 
-## 6. Step 5: Reconstructing the Video
+This helped ensure that the reconstruction algorithm would start with clean, consistent data.
 
-Reconstructing required an algorithm that balances **accuracy**, **speed**, and **simplicity**.
+**6. Step 5: Reconstructing the Video**
 
-| Algorithm | Approach | Time | Accuracy | Complexity |
-|------------|-----------|-------|-----------|-------------|
-| Random Shuffle | Baseline | Very Low | Very Low | Trivial |
-| Greedy Nearest Neighbor | Local similarity | Fast | Good | Simple |
-| 2-Way Greedy | Bidirectional refinement | Medium | Better | Moderate |
-| TSP (Nearest Insertion) | Global optimization | Slow | Best | High |
-| Graph DFS | Sequential flow | Medium | Fair | Moderate |
+Now came the most interesting part — reconstructing the correct order of the video frames.
 
-I selected the **Greedy SSIM-based ordering** because it produced near-perfect accuracy while being significantly faster than full TSP solvers.  
-However, greedy orderings can occasionally yield a reversed sequence, so I added an **optical-flow-based direction validation** step using Farneback motion estimation.
+I compared a few different algorithms to find the right balance between accuracy, speed, and simplicity:
+```
+Algorithm	Approach	Time	Accuracy	Complexity
+Random Shuffle	Baseline	Very Low	Very Low	Trivial
+Greedy Nearest Neighbor	Local similarity	Fast	Good	Simple
+2-Way Greedy	Bidirectional refinement	Medium	Better	Moderate
+TSP (Nearest Insertion)	Global optimization	Slow	Best	High
+Graph DFS	Sequential flow	Medium	Fair	Moderate
+```
 
+I went with the Greedy SSIM-based ordering — it gave me great results quickly without needing complex optimization like TSP.
+To handle cases where the video might accidentally reconstruct backward, I added a motion direction validation step using optical flow (Farneback algorithm).
 
-**The script reconstruct.py:**
+The main reconstruction script (reconstruct.py) does:
 
-  Loads all frames
+    Loads all frames
 
-  Builds the similarity matrix
+    Builds the SSIM-based similarity matrix
 
-  Orders frames greedily based on SSIM closeness
+    Orders frames greedily based on their closeness
 
-  Compares forward vs reversed sequences and picks the smoother one
+    Checks both forward and reverse directions
 
-  Uses optical flow to validate motion direction
+    Uses optical flow to confirm the correct direction
 
-It saves:
+It produces the following outputs:
 
+```
 outputs/
  ├── unjumbled_output.mp4
  ├── unjumbled_output_reversed.mp4
  ├── order.csv
  └── timing_log.json
+```
 
 **7. System Requirements**
 
@@ -117,30 +125,39 @@ outputs/
 
 CPU: Quad-core or higher
 
-RAM: ≥ 8 GB (16 GB recommended)
+RAM: At least 8 GB (16 GB recommended)
 
 **Software:**
 
-Python 3.9 – 3.11
-(Python 3.12+ or 3.14 may not yet have compatible NumPy wheels)
+Python 3.9 to 3.11
+(Python 3.12+ or 3.14 may cause dependency issues with NumPy)
 
-Tested on: Windows 11, macOS Sonoma, Ubuntu 22.04
+**Tested On:**
+
+Windows 11
+
+macOS Sonoma
+
+Ubuntu 22.04
 
 **Dependencies:**
+```
 
 opencv-python
 numpy
 tqdm
 scikit-image
+```
 
 
-**Install dependencies:**
+**Install all dependencies with:**
 
 pip install -r requirements.txt
 
+
 Note (Installation Tip):
 This project has been verified on Python 3.10 and 3.11.
-If you face any dependency or installation errors (for example, NumPy build issues), please recreate a virtual environment with Python 3.10 or 3.11 and run the following commands:
+If you face installation errors (especially NumPy build issues), create a virtual environment with Python 3.10 or 3.11 and run:
 ```
 py -3.11 -m venv venv
 venv\Scripts\activate
@@ -148,13 +165,12 @@ pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
-These versions are fully compatible and will install all packages smoothly.
-
+These versions are fully compatible and will install everything smoothly.
 
 **8. How to Run**
 **Step 0 — Place Your Input Video**
 
-Place the jumbled video file in the project root and name it:
+Put your jumbled video file in the project root and name it:
 
 jumbled_video.mp4
 
@@ -162,32 +178,39 @@ jumbled_video.mp4
 (Or update VIDEO_FILE in extract_frames.py.)
 
 **Step 1 — Extract Frames**
+```
 python extract_frames.py
+```
 
 **Step 2 — Compute Dissimilarity Matrix**
+```
 python compute_matrix_ssim.py
+```
 
 **Step 3 — Verify Matrix**
+```
 python verify_matrix.py
+```
 
 **Step 4 — Reconstruct the Video**
+```
 python reconstruct.py --frames-dir frames --fps 30
-
+```
 **9. Key Learnings**
 
-Downscaling + SSIM offered the best speed–accuracy balance.
+Downscaling + SSIM gave the best balance between speed and accuracy.
 
-Parallel computation fully utilized CPU resources.
+Using multiple CPU cores improved performance drastically.
 
-Optical-flow validation eliminated reversed sequences.
+Optical flow validation solved the reversed video issue.
 
-Modular design simplified testing and debugging.
+The modular design made testing and debugging much easier.
 
-This project deepened my understanding of video analytics, image similarity metrics, and optimization.
+This project helped me deeply understand video analytics, image similarity metrics, and performance optimization in computer vision tasks.
 
 **10. References**
 
-Wang et al., “Image Quality Assessment: From Error Visibility to Structural Similarity,” IEEE TIP, 2004
+Wang et al., “Image Quality Assessment: From Error Visibility to Structural Similarity,” IEEE TIP, 2004.
 
 OpenCV Documentation
 
@@ -197,11 +220,11 @@ Scikit-Image Documentation
 
 GPU acceleration using CUDA-enabled OpenCV or CuPy
 
-Hybrid similarity using SSIM + ORB feature matching
+Combining SSIM + ORB feature matching for better accuracy
 
-Real-time adaptation for live video reconstruction
+Extending to handle real-time video reconstruction
 
-**12. Execution Time Log (Example Output)**
+**12. Example Execution Time Log**
 {
   "load_seconds": 40.2311,
   "similarity_seconds": 213.6174,
@@ -213,10 +236,9 @@ Real-time adaptation for live video reconstruction
 }
 
 **13. Unjumbled Video (Google Drive Link)**
-
 https://drive.google.com/file/d/169dBJpBTTE_LanDsILmyCHnsC4J4CY6b/view?usp=sharing
 
-Authored by
 
+Authored by:
 Sujal GM
-For TECDIA Internship Challenge 2025
+for TECDIA Internship Challenge 
