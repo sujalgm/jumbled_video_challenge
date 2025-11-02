@@ -166,6 +166,7 @@ pip install -r requirements.txt
 These versions are fully compatible and will install everything smoothly.
 
 **8. How to Run**
+
 **Initial step -**
 ```
 git clone https://github.com/sujalgm/jumbled_video_challenge
