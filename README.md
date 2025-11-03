@@ -169,7 +169,7 @@ These versions are fully compatible and will install everything smoothly.
 
 **Initial step -**
 ```
-git clone https://github.com/sujalgm/jumbled_video_challenge
+git clone https://github.com/sujalgm/jumbled_video_challenge.git 
 cd jumbled_video_challenge
 python -m venv venv
 venv\Scripts\activate
